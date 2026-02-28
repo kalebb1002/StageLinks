@@ -2,6 +2,7 @@ USE stagelinks;
 
 CREATE TABLE `users` (
   `id` varchar(255) PRIMARY KEY,
+  `username` varchar(50) UNIQUE,
   `email` varchar(255),
   `password_hash` varchar(255),
   `account_type` varchar(255),
