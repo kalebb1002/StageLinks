@@ -12,6 +12,18 @@
     <form method="POST" action="">
         {{ form.hidden_tag() }}
         <p>
+            {{ form.first_name() }}
+            {% for error in form.first_name.errors %}
+                <span style="color: red;">{{ error }}</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.last_name() }}
+            {% for error in form.last_name.errors %}
+                <span style="color: red;">{{ error }}</span>
+            {% endfor %}
+        </p>
+        <p>
             {{ form.email() }}
             {% for error in form.email.errors %}
                 <span style="color: red;">{{ error }}</span>

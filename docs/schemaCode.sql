@@ -3,6 +3,8 @@ USE stagelinks;
 
 CREATE TABLE `users` (
   `id` varchar(255) PRIMARY KEY,
+  `first_name` varchar(50) NOT NULL,
+  `last_name` varchar(50)NOT NULL,
   `username` varchar(50) UNIQUE,
   `email` varchar(255),
   `password_hash` varchar(255),
@@ -91,3 +93,5 @@ ALTER TABLE `prev_company_shows` ADD FOREIGN KEY (`user_id`) REFERENCES `users` 
 ALTER TABLE `auditions` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 ALTER TABLE `socials` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+
+SELECT * FROM users;
