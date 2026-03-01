@@ -1,3 +1,4 @@
+CREATE DATABASE stagelinks;
 USE stagelinks;
 
 CREATE TABLE `users` (
