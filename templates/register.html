@@ -11,6 +11,7 @@
 
     <form method="POST" action="">
         {{ form.hidden_tag() }}
+        <div id="name-fields">
         <p>
             {{ form.first_name() }}
             {% for error in form.first_name.errors %}
@@ -23,6 +24,15 @@
                 <span style="color: red;">{{ error }}</span>
             {% endfor %}
         </p>
+        </div>
+        <div id="company-field">
+        <p>
+            {{ form.company_name() }}
+            {% for error in form.company_name.errors %}
+                <span style="color: red;">{{ error }}</span>
+            {% endfor %}
+        </p>
+        </div>
         <p>
             {{ form.email() }}
             {% for error in form.email.errors %}
@@ -46,6 +56,24 @@
         </form>
 
     <a href="{{url_for('login')}}">Already have an account? Log In</a>
+
+    <script>
+        const accountType = document.getElementById('account_type');
+        const nameFields = document.getElementById('name-fields');
+        const companyField = document.getElementById('company-field');
+
+        function toggleFields() {
+            if (accountType.value === 'actor') {
+                nameFields.style.display = 'block';
+                companyField.style.display = 'none';
+            } else {
+                nameFields.style.display = 'none';
+                companyField.style.display = 'block';
+            }
+        }
+        accountType.addEventListener('change', toggleFields);
+        window.onload = toggleFields;
+    </script>
 
 </body>
 </html>

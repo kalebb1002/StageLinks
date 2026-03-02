@@ -9,9 +9,6 @@ class RegisterForm(FlaskForm):
 
     last_name = StringField(validators=[InputRequired(), Length(
         min=2, max=50)], render_kw={"placeholder": "Last Name"})
-    
-    company_name = StringField(validators=[Length(
-        max=100)], render_kw={"placeholder": "Company Name"})
 
     email = StringField(validators=[InputRequired(), Email()], # Email Form
         render_kw={"placeholder": "Email"})
