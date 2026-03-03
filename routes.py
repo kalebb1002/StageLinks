@@ -32,7 +32,6 @@ def register():
             username=form.username.data,
             first_name=form.first_name.data,
             last_name=form.last_name.data,
-            company_name=form.company_name.data,
             password_hash=hashed_password,
             account_type=form.account_type.data
         )

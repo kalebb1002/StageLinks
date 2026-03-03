@@ -11,6 +11,7 @@
 
     <form method="POST" action="">
         {{ form.hidden_tag() }}
+        <p>{{ form.account_type() }}</p>
         <div id="name-fields">
         <p>
             {{ form.first_name() }}
@@ -51,7 +52,6 @@
                 <span style="color: red;">{{ error }}</span>
             {% endfor %}
         </p>
-        <p>{{ form.account_type() }}</p>
         <p>{{ form.submit() }}</p>
         </form>
 
