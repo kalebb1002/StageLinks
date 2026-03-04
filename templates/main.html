@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+</head>
+<body>
+    {%if current_user.account_type == 'actor' %}
+        <h1>{{current_user.actor_profile.first_name}} {{current_user.actor_profile.last_name}}</h1>
+        <p>Actor</p>
+        <a href={{url_for('logout')}}>Log out</a>
+    {% elif current_user.account_type == 'company' %}
+        <h1>{{current_user.company_profile.company_name}}</h1>
+        <p>Theater Company</p>
+        <a href={{url_for('logout')}}>Log out</a>
+    {% endif %}
+</body>
+</html>

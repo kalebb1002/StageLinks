@@ -3,8 +3,6 @@ USE stagelinks;
 
 CREATE TABLE `users` (
   `id` varchar(255) PRIMARY KEY,
-  `first_name` varchar(50) NOT NULL,
-  `last_name` varchar(50)NOT NULL,
   `username` varchar(50) UNIQUE,
   `email` varchar(255),
   `password_hash` varchar(255),
@@ -14,24 +12,21 @@ CREATE TABLE `users` (
 
 CREATE TABLE `actor_profiles` (
   `user_id` varchar(255) PRIMARY KEY,
-  `name` varchar(255),
+  `first_name` varchar(255),
+  `last_name` varchar(255),
   `bio` text,
-  `vocal_range` varchar(255),
-  `dance_experience` varchar(255),
   `city` varchar(255),
   `state` varchar(255),
-  `zip_code` varchar(255),
   `profile_photo` varchar(255),
   `created_at` timestamp
 );
 
 CREATE TABLE `company_profiles` (
   `user_id` varchar(255) PRIMARY KEY,
-  `name` varchar(255),
+  `company_name` varchar(255),
   `bio` text,
   `city` varchar(255),
   `state` varchar(255),
-  `zip_code` varchar(255),
   `profile_photo` varchar(255),
   `website` varchar(255),
   `created_at` timestamp
@@ -95,3 +90,7 @@ ALTER TABLE `auditions` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 ALTER TABLE `socials` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 SELECT * FROM users;
+SELECT * FROM actor_profiles;
+SELECT * FROM company_profiles;
+
+#DROP DATABASE stagelinks;

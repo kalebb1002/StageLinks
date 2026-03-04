@@ -1,34 +1,46 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, SelectField
-from wtforms.validators import InputRequired, Length, ValidationError, Email
+from wtforms.validators import InputRequired, Length, ValidationError, Email, Optional
 from models import User
 
+# Forms for user registration and login
+
+# Registration Form
 class RegisterForm(FlaskForm):
-    first_name = StringField(validators=[InputRequired(), Length(
-        min=2, max=50)], render_kw={"placeholder": "First Name"})
-
-    last_name = StringField(validators=[InputRequired(), Length(
-        min=2, max=50)], render_kw={"placeholder": "Last Name"})
-    
-    company_name = StringField(validators=[Length(
-        max=100)], render_kw={"placeholder": "Company Name"})
-
-    email = StringField(validators=[InputRequired(), Email()], # Email Form
-        render_kw={"placeholder": "Email"})
-
-    username = StringField(validators=[InputRequired(), Length( # Username Form
-        min=4, max=20)], render_kw={"placeholder": "Username"})
-    
-    password = PasswordField(validators=[InputRequired(), Length( # Password Form
-        min=4, max=20)], render_kw={"placeholder": "Password"})
-
-    submit = SubmitField("Register")
-
-    account_type = SelectField('Account Type', choices=[
+    account_type = SelectField('Account Type', choices=[ # Account Type Selection
         ('actor', 'Actor'),
         ('company', 'Theater Company')
     ], validators=[InputRequired()])
 
+    first_name = StringField(validators=[Length(max=50)
+        ], render_kw={"placeholder": "First Name"})
+
+    last_name = StringField(validators=[Length(max=50)
+        ], render_kw={"placeholder": "Last Name"})
+    
+    company_name = StringField(validators=[Length( # Company Name Field (When account type is company)
+        max=100)], render_kw={"placeholder": "Company Name"})
+
+    email = StringField(validators=[InputRequired(), Email()], # Email Field
+        render_kw={"placeholder": "Email"})
+
+    username = StringField(validators=[InputRequired(), Length( # Username Field
+        min=4, max=20)], render_kw={"placeholder": "Username"})
+    
+    password = PasswordField(validators=[InputRequired(), Length( # Password Field
+        min=4, max=20)], render_kw={"placeholder": "Password"})
+
+    submit = SubmitField("Register") # Submit Button
+
+    def validate_first_name(self, first_name):
+        if self.account_type.data == 'actor' and not first_name.data:
+            raise ValidationError('First name is required for actors.')
+
+    def validate_last_name(self, last_name):
+        if self.account_type.data == 'actor' and not last_name.data:
+            raise ValidationError('Last name is required for actors.')
+
+    # Unique Email Validation
     def validate_email(self, email):
         existing_user_email = User.query.filter_by(
             email=email.data).first()
@@ -36,6 +48,7 @@ class RegisterForm(FlaskForm):
             raise ValidationError(
                 "That email is already registered. Please use a different email.")
 
+    # Unique Username Validation
     def validate_username(self, username):
         existing_user_username = User.query.filter_by(
             username=username.data).first()
@@ -43,11 +56,12 @@ class RegisterForm(FlaskForm):
             raise ValidationError(
                 "That username already exists. Please choose a different username.")
 
+# Login Form
 class LoginForm(FlaskForm):
-    username = StringField(validators=[InputRequired(), Length(
+    username = StringField(validators=[InputRequired(), Length( # Username Field
         min=4, max=20)], render_kw={"placeholder": "Username"})
     
-    password = PasswordField(validators=[InputRequired(), Length(
+    password = PasswordField(validators=[InputRequired(), Length( # Password Field
         min=4, max=20)], render_kw={"placeholder": "Password"})
 
-    submit = SubmitField("Login")
+    submit = SubmitField("Login") # Submit Button

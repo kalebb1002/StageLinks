@@ -1,11 +1,9 @@
-from flask import render_template, url_for, redirect
+from flask import render_template, url_for, redirect, request
 from flask_login import login_user, login_required, logout_user, current_user
-from models import db, User
+from models import *
 from forms import RegisterForm, LoginForm
-from flask_bcrypt import Bcrypt
+# from flask_bcrypt import Bcrypt
 from app import app, bcrypt
-
-bcrypt = Bcrypt(app)
 
 @app.route('/')
 def home():
@@ -19,7 +17,7 @@ def login():
         if user:
             if bcrypt.check_password_hash(user.password_hash, form.password.data):
                 login_user(user)
-                return redirect(url_for('dashboard'))
+                return redirect(url_for('main'))
     return render_template('login.html', form=form)
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -30,20 +28,36 @@ def register():
         new_user = User(
             email=form.email.data,
             username=form.username.data,
-            first_name=form.first_name.data,
-            last_name=form.last_name.data,
             password_hash=hashed_password,
             account_type=form.account_type.data
         )
         db.session.add(new_user)
+        db.session.flush()
+        if form.account_type.data == 'actor':
+            new_profile = ActorProfile(
+                user_id=new_user.id,
+                first_name=form.first_name.data,
+                last_name=form.last_name.data
+            )
+            db.session.add(new_profile)
+        elif form.account_type.data == 'company':
+            company_profile = CompanyProfile(
+                user_id=new_user.id, 
+                company_name=form.company_name.data
+                )
+            db.session.add(company_profile)
+
         db.session.commit()
-        return redirect(url_for('login'))
+        login_user(new_user)
+        return redirect(url_for('main'))
+    else: 
+        print(form.errors) # Print form errors to console for debugging
     return render_template('register.html', form=form)
 
-@app.route('/dashboard', methods=['GET', 'POST'])
+@app.route('/main', methods=['GET', 'POST'])
 @login_required
-def dashboard():
-    return render_template('dashboard.html')
+def main():
+    return render_template('main.html')
 
 @app.route('/logout')
 @login_required

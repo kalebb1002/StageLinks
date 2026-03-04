@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 import os
 
-load_dotenv()
+load_dotenv() # Loads environment variables from .env file
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
