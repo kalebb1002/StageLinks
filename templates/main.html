@@ -1,19 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-</head>
-<body>
-    {%if current_user.account_type == 'actor' %}
-        <h1>{{current_user.actor_profile.first_name}} {{current_user.actor_profile.last_name}}</h1>
-        <p>Actor</p>
-        <a href={{url_for('logout')}}>Log out</a>
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+
+    {% if current_user.account_type == 'actor' %}
+        <h1>{{ current_user.actor_profile.first_name }} {{ current_user.actor_profile.last_name }}</h1>
+        <h2>Actor</h2>
+        {% if current_user.actor_profile.bio %}
+            <p>{{ current_user.actor_profile.bio }}</p>
+        {% endif %}
+        {% if current_user.actor_profile.city and current_user.actor_profile.state %}
+            <p>{{ current_user.actor_profile.city }}, {{ current_user.actor_profile.state }}</p>
+        {% endif %}
     {% elif current_user.account_type == 'company' %}
-        <h1>{{current_user.company_profile.company_name}}</h1>
-        <p>Theater Company</p>
-        <a href={{url_for('logout')}}>Log out</a>
+        <h1>{{ current_user.company_profile.company_name }}</h1>
+        <h2>Theater Company</h2>
+        {% if current_user.company_profile.bio %}
+            <p>{{ current_user.company_profile.bio }}</p>
+        {% endif %}
+        {% if current_user.company_profile.city and current_user.company_profile.state %}
+            <p>{{ current_user.company_profile.city }}, {{ current_user.company_profile.state }}</p>
+        {% endif %}
+        {% if current_user.company_profile.website %}
+            <p><a href="{{ current_user.company_profile.website }}">Website</a></p>
+        {% endif %}
     {% endif %}
-</body>
-</html>
+
+    <a href={{url_for('edit_profile')}}>Edit Profile</a><br>
+    <a href={{url_for('logout')}}>Log out</a>
+
+{% endblock %}

@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, SelectField
+from wtforms import StringField, PasswordField, SubmitField, SelectField, TextAreaField
 from wtforms.validators import InputRequired, Length, ValidationError, Email, Optional
 from models import User
 
@@ -65,3 +65,39 @@ class LoginForm(FlaskForm):
         min=4, max=20)], render_kw={"placeholder": "Password"})
 
     submit = SubmitField("Login") # Submit Button
+
+class EditActorProfileForm(FlaskForm):
+    first_name = StringField(validators=[Length(max=50)
+        ], render_kw={"placeholder": "First Name"})
+
+    last_name = StringField(validators=[Length(max=50)
+        ], render_kw={"placeholder": "Last Name"})
+    
+    bio = TextAreaField(validators=[
+        ], render_kw={"placeholder": "Bio"})
+
+    city = StringField(validators=[Length(max=100)
+        ], render_kw={"placeholder": "City"})
+
+    state = StringField(validators=[Length(max=100)
+        ], render_kw={"placeholder": "State"})
+
+    submit = SubmitField("Update Profile")
+
+class EditCompanyProfileForm(FlaskForm):
+    company_name = StringField(validators=[Length(max=100)
+        ], render_kw={"placeholder": "Company Name"})
+
+    bio = TextAreaField(validators=[Length(max=500)
+        ], render_kw={"placeholder": "Bio"})
+
+    city = StringField(validators=[Length(max=100)
+        ], render_kw={"placeholder": "City"})
+
+    state = StringField(validators=[Length(max=100)
+        ], render_kw={"placeholder": "State"})
+
+    website = StringField(validators=[Length(max=255)
+        ], render_kw={"placeholder": "Website"})
+
+    submit = SubmitField("Update Profile")

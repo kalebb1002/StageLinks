@@ -1,7 +1,9 @@
+import profile
+
 from flask import render_template, url_for, redirect, request
 from flask_login import login_user, login_required, logout_user, current_user
 from models import *
-from forms import RegisterForm, LoginForm
+from forms import RegisterForm, LoginForm, EditActorProfileForm, EditCompanyProfileForm
 # from flask_bcrypt import Bcrypt
 from app import app, bcrypt
 
@@ -64,3 +66,43 @@ def main():
 def logout():
     logout_user()
     return redirect(url_for('login'))
+
+@app.route('/edit_profile', methods=['GET', 'POST'])
+@login_required
+def edit_profile():
+    if current_user.account_type == 'actor':
+        form = EditActorProfileForm()
+        profile = ActorProfile.query.filter_by(user_id=current_user.id).first()
+        if form.validate_on_submit():
+            profile.first_name = form.first_name.data
+            profile.last_name = form.last_name.data
+            profile.bio = form.bio.data
+            profile.city = form.city.data
+            profile.state = form.state.data
+            db.session.commit()
+            return redirect(url_for('main'))
+        elif request.method == 'GET':
+            form.first_name.data = profile.first_name
+            form.last_name.data = profile.last_name
+            form.bio.data = profile.bio
+            form.city.data = profile.city
+            form.state.data = profile.state
+
+    elif current_user.account_type == 'company':
+        form = EditCompanyProfileForm()
+        profile = CompanyProfile.query.filter_by(user_id=current_user.id).first()
+        if form.validate_on_submit():
+            profile.company_name = form.company_name.data
+            profile.bio = form.bio.data
+            profile.city = form.city.data
+            profile.state = form.state.data
+            db.session.commit()
+            return redirect(url_for('main'))
+        elif request.method == 'GET':
+            form.company_name.data = profile.company_name
+            form.bio.data = profile.bio
+            form.city.data = profile.city
+            form.state.data = profile.state
+            form.website.data = profile.website
+
+    return render_template('edit_profile.html', form=form, profile=profile)

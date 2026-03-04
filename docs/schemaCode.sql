@@ -6,9 +6,8 @@ CREATE TABLE `users` (
   `username` varchar(50) UNIQUE,
   `email` varchar(255),
   `password_hash` varchar(255),
-  `account_type` varchar(255),
-  `created_at` timestamp
-);
+  `account_type` varchar(255)
+  );
 
 CREATE TABLE `actor_profiles` (
   `user_id` varchar(255) PRIMARY KEY,
@@ -17,8 +16,7 @@ CREATE TABLE `actor_profiles` (
   `bio` text,
   `city` varchar(255),
   `state` varchar(255),
-  `profile_photo` varchar(255),
-  `created_at` timestamp
+  `profile_photo` varchar(255)
 );
 
 CREATE TABLE `company_profiles` (
@@ -28,16 +26,14 @@ CREATE TABLE `company_profiles` (
   `city` varchar(255),
   `state` varchar(255),
   `profile_photo` varchar(255),
-  `website` varchar(255),
-  `created_at` timestamp
+  `website` varchar(255)
 );
 
 CREATE TABLE `photos` (
   `id` varchar(255) PRIMARY KEY,
   `user_id` varchar(255),
   `photo_url` varchar(255),
-  `caption` varchar(255),
-  `uploaded_at` timestamp
+  `caption` varchar(255)
 );
 
 CREATE TABLE `actor_credits` (
@@ -64,8 +60,7 @@ CREATE TABLE `auditions` (
   `description` text,
   `audition_date` date,
   `location` varchar(255),
-  `contact_email` varchar(255),
-  `created_at` timestamp
+  `contact_email` varchar(255)
 );
 
 CREATE TABLE `socials` (
@@ -88,9 +83,3 @@ ALTER TABLE `prev_company_shows` ADD FOREIGN KEY (`user_id`) REFERENCES `users` 
 ALTER TABLE `auditions` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 ALTER TABLE `socials` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
-
-SELECT * FROM users;
-SELECT * FROM actor_profiles;
-SELECT * FROM company_profiles;
-
-#DROP DATABASE stagelinks;

@@ -11,7 +11,6 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(50), unique=True)
     password_hash = db.Column(db.String(256), nullable=False)
     account_type = db.Column(db.String(20), nullable=False)
-    created_at = db.Column(db.DateTime)
 
 class ActorProfile(db.Model):
     __tablename__ = 'actor_profiles'
@@ -31,5 +30,6 @@ class CompanyProfile(db.Model):
     bio = db.Column(db.Text)
     city = db.Column(db.String(100))
     state = db.Column(db.String(100))
+    profile_photo = db.Column(db.String(255))
     profile_photo = db.Column(db.String(255))
     user = db.relationship('User', backref=db.backref('company_profile', uselist=False))
