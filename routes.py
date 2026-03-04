@@ -96,6 +96,11 @@ def edit_profile():
             profile.bio = form.bio.data
             profile.city = form.city.data
             profile.state = form.state.data
+            website = form.website.data
+            if website and not website.startswith(('http://', 'https://')):
+                website = 'https://' + website
+                profile.website = website
+            profile.website = website
             db.session.commit()
             return redirect(url_for('main'))
         elif request.method == 'GET':

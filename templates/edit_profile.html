@@ -8,14 +8,16 @@
         {% if current_user.account_type == 'actor' %}
             <p>{{ form.first_name.label }}<br>{{ form.first_name() }}</p>
             <p>{{ form.last_name.label }}<br>{{ form.last_name() }}</p>
+            <p>{{ form.city.label }}<br>{{ form.city() }}</p>
+            <p>{{ form.state.label }}<br>{{ form.state() }}</p>
         {% elif current_user.account_type == 'company' %}
             <p>{{ form.company_name.label }}<br>{{ form.company_name() }}</p>
+            <p>{{ form.city.label }}<br>{{ form.city() }}</p>
+            <p>{{ form.state.label }}<br>{{ form.state() }}</p>
             <p>{{ form.website.label }}<br>{{ form.website() }}</p>
         {% endif %}
 
         <p>{{ form.bio.label }}<br>{{ form.bio(rows=5, cols=50) }}</p>
-        <p>{{ form.city.label }}<br>{{ form.city() }}</p>
-        <p>{{ form.state.label }}<br>{{ form.state() }}</p>
 
         <p>{{ form.submit() }}</p>
     </form>

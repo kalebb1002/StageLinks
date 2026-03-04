@@ -31,5 +31,5 @@ class CompanyProfile(db.Model):
     city = db.Column(db.String(100))
     state = db.Column(db.String(100))
     profile_photo = db.Column(db.String(255))
-    profile_photo = db.Column(db.String(255))
+    website = db.Column(db.String(255))
     user = db.relationship('User', backref=db.backref('company_profile', uselist=False))
