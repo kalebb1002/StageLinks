@@ -101,3 +101,18 @@ class EditCompanyProfileForm(FlaskForm):
         ], render_kw={"placeholder": "Website"})
 
     submit = SubmitField("Update Profile")
+
+class ActorCreditForm(FlaskForm):
+    show_name = StringField(validators=[Length(max=255)
+        ], render_kw={"placeholder": "Show Name"})
+
+    theater_name = StringField(validators=[Length(max=255)
+        ], render_kw={"placeholder": "Theater Name"})
+
+    role = StringField(validators=[Length(max=255)
+        ], render_kw={"placeholder": "Role"})
+
+    year = StringField(validators=[Length(max=4)
+        ], render_kw={"placeholder": "Year (e.g., 2023)"})
+
+    submit = SubmitField("Add Credit")
