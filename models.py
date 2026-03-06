@@ -33,3 +33,13 @@ class CompanyProfile(db.Model):
     profile_photo = db.Column(db.String(255))
     website = db.Column(db.String(255))
     user = db.relationship('User', backref=db.backref('company_profile', uselist=False))
+
+class ActorCredit(db.Model):
+    __tablename__ = 'actor_credits'
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
+    show_name = db.Column(db.String(255))
+    theater_name = db.Column(db.String(255))
+    role = db.Column(db.String(255))
+    year = db.Column(db.Integer)
+    user = db.relationship('User', backref=db.backref('actor_credits', lazy=True))
