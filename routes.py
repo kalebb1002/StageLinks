@@ -1,6 +1,4 @@
-import profile
-
-from flask import render_template, url_for, redirect, request
+from flask import render_template, url_for, redirect, request, flash
 from flask_login import login_user, login_required, logout_user, current_user
 from models import *
 from forms import RegisterForm, LoginForm, EditActorProfileForm, EditCompanyProfileForm
@@ -16,10 +14,11 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
-        if user:
-            if bcrypt.check_password_hash(user.password_hash, form.password.data):
-                login_user(user)
-                return redirect(url_for('main'))
+        if user and bcrypt.check_password_hash(user.password_hash, form.password.data):
+            login_user(user)
+            return redirect(url_for('profile', username=user.username))
+        else:
+            flash('Invalid username or password', 'danger')
     return render_template('login.html', form=form)
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -51,15 +50,21 @@ def register():
 
         db.session.commit()
         login_user(new_user)
-        return redirect(url_for('main'))
+        return redirect(url_for('profile', username=new_user.username))
     else: 
         print(form.errors) # Print form errors to console for debugging
     return render_template('register.html', form=form)
 
-@app.route('/main', methods=['GET', 'POST'])
-@login_required
-def main():
-    return render_template('main.html')
+
+@app.route('/profile/<username>', methods=['GET', 'POST'])
+def profile(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    if user.account_type == 'actor':
+        profile = ActorProfile.query.filter_by(user_id=user.id).first()
+    else:
+        profile = CompanyProfile.query.filter_by(user_id=user.id).first()
+
+    return render_template('profile.html', user=user, profile=profile)
 
 @app.route('/logout')
 @login_required
@@ -80,7 +85,7 @@ def edit_profile():
             profile.city = form.city.data
             profile.state = form.state.data
             db.session.commit()
-            return redirect(url_for('main'))
+            return redirect(url_for('profile', username=current_user.username))
         elif request.method == 'GET':
             form.first_name.data = profile.first_name
             form.last_name.data = profile.last_name
@@ -102,7 +107,7 @@ def edit_profile():
                 profile.website = website
             profile.website = website
             db.session.commit()
-            return redirect(url_for('main'))
+            return redirect(url_for('profile', username=current_user.username))
         elif request.method == 'GET':
             form.company_name.data = profile.company_name
             form.bio.data = profile.bio

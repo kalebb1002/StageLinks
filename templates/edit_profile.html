@@ -19,7 +19,7 @@
 
         <p>{{ form.bio.label }}<br>{{ form.bio(rows=5, cols=50) }}</p>
 
-        <p>{{ form.submit() }}</p>
+        <p>{{ form.submit(class="btn btn-primary") }}</p>
     </form>
-    <a href="{{ url_for('main') }}">Cancel</a>
+    <a href="{{ url_for('profile', username=current_user.username) }}" class="btn btn-secondary">Cancel</a>
 {% endblock %}

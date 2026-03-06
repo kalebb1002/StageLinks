@@ -76,11 +76,11 @@ class EditActorProfileForm(FlaskForm):
     bio = TextAreaField(validators=[
         ], render_kw={"placeholder": "Bio"})
 
-    city = StringField(validators=[Length(max=100)
+    city = StringField(validators=[Optional(), Length(max=100)
         ], render_kw={"placeholder": "City"})
 
-    state = StringField(validators=[Length(max=100)
-        ], render_kw={"placeholder": "State"})
+    state = StringField(validators=[Optional(), Length(max=2)
+        ], render_kw={"placeholder": "State (e.g., MD)"})
 
     submit = SubmitField("Update Profile")
 
