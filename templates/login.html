@@ -1,18 +1,26 @@
 {% extends "base.html" %}
 {% block title %}Login{% endblock %}
 {% block content %}
+{% macro render_field(field) %}
+    <p>
+        {{ field(class="form-control") }}
+        {% for error in field.errors %}
+            <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+    </p>
+{% endmacro %}
     
     <h1>Login Page</h1>
 
     <form method="POST" action="">
         {{ form.hidden_tag() }}
-        <p>
-            {{ form.username() }}
-        </p>
-        <p>
-            {{ form.password() }}
-        </p>
-        <p>{{ form.submit() }}</p>
+        <div id="name-fields">
+            {{ render_field(form.username) }}
+        </div>
+        <div id="password-field">
+            {{ render_field(form.password) }}
+        </div>
+        <p>{{ form.submit(class="btn btn-primary") }}</p>
     </form>
 
     <a href="{{url_for('register')}}">Don't have an account? Sign Up</a>
