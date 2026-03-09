@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, SelectField, TextAreaField
-from wtforms.validators import InputRequired, Length, ValidationError, Email, Optional
+from wtforms.validators import InputRequired, Length, ValidationError, Email, Optional, Regexp
 from models import User
 
 # Forms for user registration and login
@@ -25,7 +25,7 @@ class RegisterForm(FlaskForm):
         render_kw={"placeholder": "Email"})
 
     username = StringField(validators=[InputRequired(), Length( # Username Field
-        min=4, max=20)], render_kw={"placeholder": "Username"})
+        min=4, max=20), Regexp(r'^\S*$', message="No Spaces Allowed.")], render_kw={"placeholder": "Username"})
     
     password = PasswordField(validators=[InputRequired(), Length( # Password Field
         min=4, max=20)], render_kw={"placeholder": "Password"})
