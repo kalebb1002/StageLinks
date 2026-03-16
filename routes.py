@@ -64,7 +64,6 @@ def profile(username):
     else:
         profile = CompanyProfile.query.filter_by(user_id=user.id).first()
         credits = []
-
     return render_template('profile.html', user=user, profile=profile, credits=credits)
 
 @app.route('/logout')
