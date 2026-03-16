@@ -1,8 +1,7 @@
 from flask import render_template, url_for, redirect, request, flash
 from flask_login import login_user, login_required, logout_user, current_user
 from models import *
-from forms import RegisterForm, LoginForm, EditActorProfileForm, EditCompanyProfileForm
-# from flask_bcrypt import Bcrypt
+from forms import RegisterForm, LoginForm, EditActorProfileForm, EditCompanyProfileForm, ActorCreditForm
 from app import app, bcrypt
 
 @app.route('/')
@@ -61,10 +60,12 @@ def profile(username):
     user = User.query.filter_by(username=username).first_or_404()
     if user.account_type == 'actor':
         profile = ActorProfile.query.filter_by(user_id=user.id).first()
+        credits = ActorCredit.query.filter_by(user_id=user.id).order_by(ActorCredit.year.desc()).all()
     else:
         profile = CompanyProfile.query.filter_by(user_id=user.id).first()
+        credits = []
 
-    return render_template('profile.html', user=user, profile=profile)
+    return render_template('profile.html', user=user, profile=profile, credits=credits)
 
 @app.route('/logout')
 @login_required
@@ -116,3 +117,29 @@ def edit_profile():
             form.website.data = profile.website
 
     return render_template('edit_profile.html', form=form, profile=profile)
+
+@app.route('/account_settings', methods=['GET', 'POST'])
+@login_required
+def account_settings():
+    # Placeholder for account settings page
+    return render_template('account_settings.html') 
+
+@app.route('/add_credit', methods=['GET', 'POST'])
+@login_required
+def add_credit():
+    if current_user.account_type != 'actor':
+        return redirect(url_for('profile', username=current_user.username))
+    form = ActorCreditForm()
+    if form.validate_on_submit():
+        credit = ActorCredit(
+            user_id=current_user.id,
+            show_name=form.show_name.data,
+            theater_name=form.theater_name.data,
+            role=form.role.data,
+            year=form.year.data
+        )
+        db.session.add(credit)
+        db.session.commit()
+
+        return redirect(url_for('profile', username=current_user.username))
+    return render_template('add_credit.html', form=form)
