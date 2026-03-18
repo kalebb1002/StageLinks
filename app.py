@@ -3,6 +3,7 @@ from flask_login import LoginManager
 from models import db, User
 from flask_bcrypt import Bcrypt
 from dotenv import load_dotenv
+from flask_wtf.csrf import CSRFProtect
 
 import os
 

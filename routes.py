@@ -1,7 +1,7 @@
 from flask import render_template, url_for, redirect, request, flash
 from flask_login import login_user, login_required, logout_user, current_user
 from models import *
-from forms import RegisterForm, LoginForm, EditActorProfileForm, EditCompanyProfileForm, ActorCreditForm
+from forms import AccountSettingsForm, RegisterForm, LoginForm, EditActorProfileForm, EditCompanyProfileForm, ActorCreditForm, DeleteCreditForm
 from app import app, bcrypt
 
 @app.route('/')
@@ -64,7 +64,8 @@ def profile(username):
     else:
         profile = CompanyProfile.query.filter_by(user_id=user.id).first()
         credits = []
-    return render_template('profile.html', user=user, profile=profile, credits=credits)
+    delete_form = DeleteCreditForm()
+    return render_template('profile.html', user=user, profile=profile, credits=credits, delete_form=delete_form)
 
 @app.route('/logout')
 @login_required
@@ -120,8 +121,17 @@ def edit_profile():
 @app.route('/account_settings', methods=['GET', 'POST'])
 @login_required
 def account_settings():
-    # Placeholder for account settings page
-    return render_template('account_settings.html') 
+    form = AccountSettingsForm()
+    if form.validate_on_submit():
+        current_user.email = form.email.data
+        current_user.username = form.username.data
+        db.session.commit()
+        flash('Account settings updated successfully.', 'success')
+        return redirect(url_for('profile', username=current_user.username))
+    elif request.method == 'GET':
+        form.email.data = current_user.email
+        form.username.data = current_user.username
+    return render_template('account_settings.html', form=form)
 
 @app.route('/add_credit', methods=['GET', 'POST'])
 @login_required
@@ -142,3 +152,15 @@ def add_credit():
 
         return redirect(url_for('profile', username=current_user.username))
     return render_template('add_credit.html', form=form)
+
+@app.route('/delete_credit/<credit_id>', methods=['POST'])
+@login_required
+def delete_credit(credit_id):
+    credit = ActorCredit.query.get_or_404(credit_id)
+    if credit.user_id != current_user.id:
+        flash('You do not have permission to delete this credit.', 'danger')
+        return redirect(url_for('profile', username=current_user.username))
+    db.session.delete(credit)
+    db.session.commit()
+    flash('Credit deleted successfully.', 'success')
+    return redirect(url_for('profile', username=current_user.username))

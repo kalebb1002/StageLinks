@@ -1,0 +1,28 @@
+.delete-btn {
+    background-color: #efefef;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    color: rgb(0, 0, 0);
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    padding-bottom: 2px;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    line-height: 1;
+}
+
+.toast-message {
+    position: fixed; 
+    bottom: 20px; 
+    right: 20px; 
+    z-index: 9999; 
+    opacity: 1; 
+    transition: opacity 1s ease-out;
+}

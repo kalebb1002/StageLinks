@@ -12,27 +12,35 @@
             <p>{{ user.actor_profile.bio }}</p>
         {% endif %}
 
-        <h3>Past Credits</h3>
+        
         {% if credits %}
+        <h3>Past Credits</h3>
             <div class="d-flex overflow-auto gap-3 pb-2">
                 {% for credit in credits %}
-                    <div class="card" style="min-width: 200px;">
+                    <div class="card" style="min-width: 200px; position: relative;">
                         <div class="card-body">
                             <h5 class="card-title">{{ credit.show_name }}</h5>
                             <p class="card-text"><strong>Role:</strong> {{ credit.role }}</p>
                             <p class="card-text"><strong>Theater:</strong> {{ credit.theater_name }}</p>
                             <p class="card-text"><strong>Year:</strong> {{ credit.year }}</p>
+                            {% if current_user.is_authenticated and current_user.username == user.username %}
+                                <form method="POST" action="{{ url_for('delete_credit', credit_id=credit.id) }}" style="position: absolute; top: 5px; right: 5px;">
+                                    {{ delete_form.hidden_tag() }}
+                                    <button type="submit" class="delete-btn">&times;</button>
+                                </form>
+                            {% endif %}
                         </div>
                     </div>
                 {% endfor %}
             </div>
         {% else %}
-            <p>No credits added yet.</p>
+            <p></p>
         {% endif %}
 
         {% if current_user.is_authenticated and current_user.username == user.username %}
             <a href="{{ url_for('add_credit') }}" class="btn btn-primary">Add Credit</a>
         {% endif %}
+        <br><br>
 
     {% elif user.account_type == 'company' %}
         <h1>{{ user.company_profile.company_name }}</h1>

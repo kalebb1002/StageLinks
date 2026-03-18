@@ -1,11 +1,9 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, SelectField, TextAreaField
 from wtforms.validators import InputRequired, Length, ValidationError, Email, Optional, Regexp
+from flask_login import current_user
 from models import User
 
-# Forms for user registration and login
-
-# Registration Form
 class RegisterForm(FlaskForm):
     account_type = SelectField('Account Type', choices=[ # Account Type Selection
         ('actor', 'Actor'),
@@ -84,6 +82,33 @@ class EditActorProfileForm(FlaskForm):
 
     submit = SubmitField("Update Profile")
 
+class AccountSettingsForm(FlaskForm):
+    email = StringField(validators=[InputRequired(), Email()],
+        render_kw={"placeholder": "Email"})
+
+    username = StringField(validators=[InputRequired(), Length(
+        min=4, max=20), Regexp(r'^\S*$', message="No Spaces Allowed.")], render_kw={"placeholder": "Username"})
+
+    submit = SubmitField("Update Account Settings")
+
+    # Unique Email Validation
+    def validate_email(self, email):
+        if email.data != current_user.email:
+            existing_user_email = User.query.filter_by(
+                email=email.data).first()
+            if existing_user_email:
+                raise ValidationError(
+                    "That email is already registered. Please use a different email.")
+
+    # Unique Username Validation
+    def validate_username(self, username):
+        if username.data != current_user.username:
+            existing_user_username = User.query.filter_by(
+                username=username.data).first()
+            if existing_user_username:
+                raise ValidationError(
+                    "That username already exists. Please choose a different username.")
+
 class EditCompanyProfileForm(FlaskForm):
     company_name = StringField(validators=[Length(max=100)
         ], render_kw={"placeholder": "Company Name"})
@@ -116,3 +141,6 @@ class ActorCreditForm(FlaskForm):
         ], render_kw={"placeholder": "Year (e.g., 2023)"})
 
     submit = SubmitField("Add Credit")
+
+class DeleteCreditForm(FlaskForm):
+    submit = SubmitField("Delete Credit")
