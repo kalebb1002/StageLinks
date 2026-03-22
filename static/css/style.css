@@ -26,3 +26,8 @@
     opacity: 1; 
     transition: opacity 1s ease-out;
 }
+
+.card-body {
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
