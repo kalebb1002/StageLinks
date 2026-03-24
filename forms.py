@@ -89,7 +89,7 @@ class AccountSettingsForm(FlaskForm):
     username = StringField(validators=[InputRequired(), Length(
         min=4, max=20), Regexp(r'^\S*$', message="No Spaces Allowed.")], render_kw={"placeholder": "Username"})
 
-    submit = SubmitField("Update Account Settings")
+    submit = SubmitField("Update Account")
 
     # Unique Email Validation
     def validate_email(self, email):
@@ -108,6 +108,19 @@ class AccountSettingsForm(FlaskForm):
             if existing_user_username:
                 raise ValidationError(
                     "That username already exists. Please choose a different username.")
+            
+class ChangePasswordForm(FlaskForm):
+    current_password = PasswordField(validators=[InputRequired(), Length(
+        min=4, max=20)], render_kw={"placeholder": "Current Password"})
+    new_password = PasswordField(validators=[InputRequired(), Length(min=4, max=20)],
+        render_kw={"placeholder": "New Password"})
+    confirm_password = PasswordField(validators=[InputRequired()],
+        render_kw={"placeholder": "Confirm New Password"})
+    submit = SubmitField("Reset Password")
+
+    def validate_confirm_password(self, confirm_password):
+        if confirm_password.data != self.new_password.data:
+            raise ValidationError('Passwords do not match.')
 
 class EditCompanyProfileForm(FlaskForm):
     company_name = StringField(validators=[Length(max=100)

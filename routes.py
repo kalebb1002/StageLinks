@@ -1,7 +1,7 @@
 from flask import render_template, url_for, redirect, request, flash
 from flask_login import login_user, login_required, logout_user, current_user
 from models import *
-from forms import AccountSettingsForm, RegisterForm, LoginForm, EditActorProfileForm, EditCompanyProfileForm, ActorCreditForm, DeleteCreditForm
+from forms import *
 from app import app, bcrypt
 
 @app.route('/')
@@ -121,17 +121,29 @@ def edit_profile():
 @app.route('/account_settings', methods=['GET', 'POST'])
 @login_required
 def account_settings():
-    form = AccountSettingsForm()
-    if form.validate_on_submit():
-        current_user.email = form.email.data
-        current_user.username = form.username.data
+    account_form = AccountSettingsForm()
+    password_form = ChangePasswordForm()
+
+    if account_form.validate_on_submit():
+        current_user.email = account_form.email.data
+        current_user.username = account_form.username.data
         db.session.commit()
         flash('Account settings updated successfully.', 'success')
         return redirect(url_for('profile', username=current_user.username))
     elif request.method == 'GET':
-        form.email.data = current_user.email
-        form.username.data = current_user.username
-    return render_template('account_settings.html', form=form)
+        account_form.email.data = current_user.email
+        account_form.username.data = current_user.username
+
+    if password_form.validate_on_submit():
+        if bcrypt.check_password_hash(current_user.password_hash, password_form.current_password.data):
+            current_user.password_hash = bcrypt.generate_password_hash(password_form.new_password.data)
+            db.session.commit()
+            flash('Password changed successfully.', 'success')
+            return redirect(url_for('account_settings'))
+        else:
+            flash('Current password is incorrect.', 'danger')
+
+    return render_template('account_settings.html', account_form=account_form, password_form=password_form)
 
 @app.route('/add_credit', methods=['GET', 'POST'])
 @login_required
