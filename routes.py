@@ -124,24 +124,33 @@ def account_settings():
     account_form = AccountSettingsForm()
     password_form = ChangePasswordForm()
 
-    if account_form.validate_on_submit():
-        current_user.email = account_form.email.data
-        current_user.username = account_form.username.data
-        db.session.commit()
-        flash('Account settings updated successfully.', 'success')
-        return redirect(url_for('profile', username=current_user.username))
-    elif request.method == 'GET':
-        account_form.email.data = current_user.email
-        account_form.username.data = current_user.username
+    if request.method == 'POST':
+        if 'update_account' in request.form:
+            if account_form.validate_on_submit():
+                current_user.email = account_form.email.data
+                current_user.username = account_form.username.data
+                db.session.commit()
+                flash('Account settings updated successfully.', 'success')
+                return redirect(url_for('profile', username=current_user.username))
+        elif 'change_password' in request.form:
+            if password_form.validate_on_submit():
+                if bcrypt.check_password_hash(current_user.password_hash, password_form.current_password.data):
+                    current_user.password_hash = bcrypt.generate_password_hash(password_form.new_password.data)
+                    db.session.commit()
+                    flash('Password changed successfully.', 'success')
+                    return redirect(url_for('account_settings'))
+                else:
+                    flash('Current password is incorrect.', 'danger')
+        
+    account_form.email.data = current_user.email
+    account_form.username.data = current_user.username
 
-    if password_form.validate_on_submit():
-        if bcrypt.check_password_hash(current_user.password_hash, password_form.current_password.data):
-            current_user.password_hash = bcrypt.generate_password_hash(password_form.new_password.data)
-            db.session.commit()
-            flash('Password changed successfully.', 'success')
-            return redirect(url_for('account_settings'))
-        else:
-            flash('Current password is incorrect.', 'danger')
+    if request.method == 'POST':
+        print(request.form)
+    if 'update_account' in request.form:
+        print("update account branch")
+    elif 'change_password' in request.form:
+        print("change password branch")
 
     return render_template('account_settings.html', account_form=account_form, password_form=password_form)
 
