@@ -1,9 +1,13 @@
 {% extends "base.html" %}
-{% block title %}Home{% endblock %}
-
+{% block title %}StageLinks{% endblock %}
 {% block content %}
-    <h1>Welcome to StageLinks!!</h1>
-    <p>Your one-stop platform for connecting actors and theaters. Whether you're an actor looking for your next role or a theater seeking talented performers, 
-        StageLinks is here to help you find the perfect match today!</p>
-    <p>Start by <a href="{{url_for('register')}}" class="btn btn-primary">Creating an Account</a> or <a href="{{url_for('login')}}" class="btn btn-primary">Logging In</a>.</p>
+    {% if current_user.is_authenticated %}
+        <h1>Welcome back, {{ current_user.username }}!</h1>
+        <a href="{{ url_for('profile', username=current_user.username) }}" class="btn btn-primary">Go to Profile</a>
+    {% else %}
+        <h1>Welcome to StageLinks</h1>
+        <p>Connecting actors and theater companies.</p>
+        <a href="{{ url_for('register') }}" class="btn btn-primary">Sign Up</a>
+        <a href="{{ url_for('login') }}" class="btn btn-secondary">Login</a>
+    {% endif %}
 {% endblock %}
