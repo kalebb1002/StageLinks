@@ -61,11 +61,13 @@ def profile(username):
     if user.account_type == 'actor':
         profile = ActorProfile.query.filter_by(user_id=user.id).first()
         credits = ActorCredit.query.filter_by(user_id=user.id).order_by(ActorCredit.year.desc()).all()
+        shows = []
     else:
         profile = CompanyProfile.query.filter_by(user_id=user.id).first()
         credits = []
+        shows = PastCompanyShow.query.filter_by(user_id=user.id).order_by(PastCompanyShow.year.desc()).all()
     delete_form = DeleteCreditForm()
-    return render_template('profile.html', user=user, profile=profile, credits=credits, delete_form=delete_form)
+    return render_template('profile.html', user=user, profile=profile, credits=credits, shows=shows, delete_form=delete_form)
 
 @app.route('/logout')
 @login_required
@@ -184,4 +186,35 @@ def delete_credit(credit_id):
     db.session.delete(credit)
     db.session.commit()
     flash('Credit deleted successfully.', 'success')
+    return redirect(url_for('profile', username=current_user.username))
+
+@app.route('/add_company_show', methods=['GET', 'POST'])
+@login_required
+def add_company_show():
+    if current_user.account_type != 'company':
+        return redirect(url_for('profile', username=current_user.username))
+    form = PastCompanyShowForm()
+    if form.validate_on_submit():
+        show = PastCompanyShow(
+            user_id=current_user.id,
+            show_name=form.show_name.data,
+            year=form.year.data,
+            description=form.description.data
+        )
+        db.session.add(show)
+        db.session.commit()
+
+        return redirect(url_for('profile', username=current_user.username))
+    return render_template('add_company_show.html', form=form)
+
+@app.route('/delete_company_show/<show_id>', methods=['POST'])
+@login_required
+def delete_company_show(show_id):
+    show = PastCompanyShow.query.get_or_404(show_id)
+    if show.user_id != current_user.id:
+        flash('You do not have permission to delete this show.', 'danger')
+        return redirect(url_for('profile', username=current_user.username))
+    db.session.delete(show)
+    db.session.commit()
+    flash('Show deleted successfully.', 'success')
     return redirect(url_for('profile', username=current_user.username))

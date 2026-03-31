@@ -157,3 +157,15 @@ class ActorCreditForm(FlaskForm):
 
 class DeleteCreditForm(FlaskForm):
     submit = SubmitField("Delete Credit")
+
+class PastCompanyShowForm(FlaskForm):
+    show_name = StringField(validators=[Length(max=255)
+        ], render_kw={"placeholder": "Show Name"})
+
+    year = StringField(validators=[Length(max=4)
+        ], render_kw={"placeholder": "Year (e.g., 2023)"})
+
+    description = TextAreaField(validators=[
+        ], render_kw={"placeholder": "Description"})
+
+    submit = SubmitField("Add Past Show")
