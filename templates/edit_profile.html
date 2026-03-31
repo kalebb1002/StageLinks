@@ -2,15 +2,17 @@
 {% block title %}Edit Profile{% endblock %}
 {% block content %}
     <h1>Edit Profile</h1>
-    <form method="POST" action="" novalidate>
+    <form method="POST" action="" novalidate enctype="multipart/form-data">
         {{ form.hidden_tag() }}
 
         {% if current_user.account_type == 'actor' %}
+            <p>{{ form.profile_photo.label }}<br>{{ form.profile_photo() }}</p>
             <p>{{ form.first_name.label }}<br>{{ form.first_name() }}</p>
             <p>{{ form.last_name.label }}<br>{{ form.last_name() }}</p>
             <p>{{ form.city.label }}<br>{{ form.city() }}</p>
             <p>{{ form.state.label }}<br>{{ form.state() }}</p>
         {% elif current_user.account_type == 'company' %}
+            <p>{{ form.profile_photo.label }}<br>{{ form.profile_photo() }}</p>
             <p>{{ form.company_name.label }}<br>{{ form.company_name() }}</p>
             <p>{{ form.city.label }}<br>{{ form.city() }}</p>
             <p>{{ form.state.label }}<br>{{ form.state() }}</p>

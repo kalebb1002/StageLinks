@@ -1,4 +1,5 @@
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileField, FileAllowed
 from wtforms import StringField, PasswordField, SubmitField, SelectField, TextAreaField
 from wtforms.validators import InputRequired, Length, ValidationError, Email, Optional, Regexp
 from flask_login import current_user
@@ -79,6 +80,32 @@ class EditActorProfileForm(FlaskForm):
 
     state = StringField(validators=[Optional(), Length(max=2)
         ], render_kw={"placeholder": "State (e.g., MD)"})
+    
+    profile_photo = FileField('Profile Photo', validators=[
+        FileAllowed(['jpg', 'jpeg', 'png'], 'Images only!')
+    ])
+    
+    submit = SubmitField("Update Profile")
+            
+class EditCompanyProfileForm(FlaskForm):
+    company_name = StringField(validators=[Length(max=100)
+        ], render_kw={"placeholder": "Company Name"})
+
+    bio = TextAreaField(validators=[Length(max=500)
+        ], render_kw={"placeholder": "Bio"})
+
+    city = StringField(validators=[Length(max=100)
+        ], render_kw={"placeholder": "City"})
+
+    state = StringField(validators=[Length(max=100)
+        ], render_kw={"placeholder": "State"})
+
+    website = StringField(validators=[Length(max=255)
+        ], render_kw={"placeholder": "Website"})
+    
+    profile_photo = FileField('Profile Photo', validators=[
+        FileAllowed(['jpg', 'jpeg', 'png'], 'Images only!')
+    ])
 
     submit = SubmitField("Update Profile")
 
@@ -108,7 +135,7 @@ class AccountSettingsForm(FlaskForm):
             if existing_user_username:
                 raise ValidationError(
                     "That username already exists. Please choose a different username.")
-            
+
 class ChangePasswordForm(FlaskForm):
     current_password = PasswordField(validators=[InputRequired(), Length(
         min=4, max=20)], render_kw={"placeholder": "Current Password"})
@@ -121,24 +148,6 @@ class ChangePasswordForm(FlaskForm):
     def validate_confirm_password(self, confirm_password):
         if confirm_password.data != self.new_password.data:
             raise ValidationError('Passwords do not match.')
-
-class EditCompanyProfileForm(FlaskForm):
-    company_name = StringField(validators=[Length(max=100)
-        ], render_kw={"placeholder": "Company Name"})
-
-    bio = TextAreaField(validators=[Length(max=500)
-        ], render_kw={"placeholder": "Bio"})
-
-    city = StringField(validators=[Length(max=100)
-        ], render_kw={"placeholder": "City"})
-
-    state = StringField(validators=[Length(max=100)
-        ], render_kw={"placeholder": "State"})
-
-    website = StringField(validators=[Length(max=255)
-        ], render_kw={"placeholder": "Website"})
-
-    submit = SubmitField("Update Profile")
 
 class ActorCreditForm(FlaskForm):
     show_name = StringField(validators=[Length(max=255)

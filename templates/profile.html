@@ -3,6 +3,11 @@
 {% block content %}
 
     {% if user.account_type == 'actor' %}
+        {% if user.actor_profile.profile_photo %}
+            <img src="{{ url_for('static', filename='uploads/' + user.actor_profile.profile_photo) }}" 
+            alt="Profile Photo" style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%; margin-bottom: 20px;">
+        {% endif %}
+
         <h1>{{ user.actor_profile.first_name }} {{ user.actor_profile.last_name }}</h1>
         <p>Actor</p>
         {% if user.actor_profile.city and user.actor_profile.state %}
@@ -43,6 +48,11 @@
         {% endif %}
 
     {% elif user.account_type == 'company' %}
+        {% if user.company_profile.profile_photo %}
+            <img src="{{ url_for('static', filename='uploads/' + user.company_profile.profile_photo) }}" 
+            alt="Profile Photo" style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%; margin-bottom: 20px;">
+        {% endif %}
+
     <h1>{{ user.company_profile.company_name }}</h1>
     <p>Theater Company</p>
     {% if user.company_profile.city and user.company_profile.state %}

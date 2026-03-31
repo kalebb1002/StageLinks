@@ -1,5 +1,7 @@
 from flask import render_template, url_for, redirect, request, flash
 from flask_login import login_user, login_required, logout_user, current_user
+from werkzeug.utils import secure_filename
+import os
 from models import *
 from forms import *
 from app import app, bcrypt
@@ -87,6 +89,11 @@ def edit_profile():
             profile.bio = form.bio.data
             profile.city = form.city.data
             profile.state = form.state.data
+            if form.profile_photo.data:
+                photo = form.profile_photo.data
+                filename = secure_filename(photo.filename)
+                photo.save(os.path.join('static/uploads', filename))
+                profile.profile_photo = filename
             db.session.commit()
             return redirect(url_for('profile', username=current_user.username))
         elif request.method == 'GET':
@@ -107,8 +114,12 @@ def edit_profile():
             website = form.website.data
             if website and not website.startswith(('http://', 'https://')):
                 website = 'https://' + website
-                profile.website = website
             profile.website = website
+            if form.profile_photo.data:
+                photo = form.profile_photo.data
+                filename = secure_filename(photo.filename)
+                photo.save(os.path.join('static/uploads', filename))
+                profile.profile_photo = filename
             db.session.commit()
             return redirect(url_for('profile', username=current_user.username))
         elif request.method == 'GET':
