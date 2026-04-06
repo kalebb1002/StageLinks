@@ -9,10 +9,10 @@
     </p>
 {% endmacro %}
 
-    <h1>Registration Page</h1>
+    <h1>Sign Up</h1>
     <form method="POST" action="" novalidate>
         {{ form.hidden_tag() }}
-        <p>{{ form.account_type() }}</p>
+        <p class="dropdown">{{ form.account_type() }}</p>
 
         <div id="name-fields">
             {{ render_field(form.first_name) }}

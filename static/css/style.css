@@ -1,11 +1,11 @@
 .delete-btn {
-    background-color: #efefef;
+    background-color: rgba(255, 255, 255, 0.2);
     border: none;
     border-radius: 50%;
     width: 20px;
     height: 20px;
     cursor: pointer;
-    color: rgb(0, 0, 0);
+    color: rgba(255, 255, 255, 0.7);
     font-size: 0.8rem;
     display: flex;
     align-items: center;
@@ -16,6 +16,11 @@
     top: 5px;
     right: 5px;
     line-height: 1;
+}
+
+.delete-btn:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+    color: white;
 }
 
 .toast-message {
@@ -30,4 +35,13 @@
 .card-body {
     padding-top: 30px;
     padding-bottom: 30px;
+}
+
+.dropdown {
+    margin-bottom: 15px;
+}
+
+header {
+    max-width: 100% !important;
+    width: 100% !important;
 }
