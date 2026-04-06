@@ -178,3 +178,9 @@ class PastCompanyShowForm(FlaskForm):
         ], render_kw={"placeholder": "Description"})
 
     submit = SubmitField("Add Past Show")
+
+class SearchForm(FlaskForm):
+    search_query = StringField(validators=[Length(max=255)
+        ], render_kw={"placeholder": "Search for actors or companies..."})
+
+    submit = SubmitField("Search")

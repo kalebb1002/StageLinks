@@ -5,6 +5,8 @@ import os
 from models import *
 from forms import *
 from app import app, bcrypt
+import requests
+from geopy.distance import geodesic
 
 @app.route('/')
 def home():
@@ -229,3 +231,47 @@ def delete_company_show(show_id):
     db.session.commit()
     flash('Show deleted successfully.', 'success')
     return redirect(url_for('profile', username=current_user.username))
+
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    form = SearchForm()
+    results = []
+    if form.validate_on_submit():
+        zip_code = form.zip_code.data
+        radius = int(form.radius.data)
+        search_type = form.search_type.data
+
+        # Get coordinates for the zip code
+        response = requests.get(f'https://api.zippopotam.us/us/{zip_code}')
+        if response.status_code != 200:
+            flash('Invalid zip code. Please try again.', 'danger')
+            return render_template('search.html', form=form, results=results)
+
+        data = response.json()
+        search_lat = float(data['places'][0]['latitude'])
+        search_lon = float(data['places'][0]['longitude'])
+        search_coords = (search_lat, search_lon)
+
+        # Query users of the correct type
+        users = User.query.filter_by(account_type=search_type).all()
+
+        for user in users:
+            if search_type == 'actor':
+                profile = ActorProfile.query.filter_by(user_id=user.id).first()
+            else:
+                profile = CompanyProfile.query.filter_by(user_id=user.id).first()
+
+            if profile and profile.zip_code:
+                profile_response = requests.get(f'https://api.zippopotam.us/us/{profile.zip_code}')
+                if profile_response.status_code == 200:
+                    profile_data = profile_response.json()
+                    profile_lat = float(profile_data['places'][0]['latitude'])
+                    profile_lon = float(profile_data['places'][0]['longitude'])
+                    profile_coords = (profile_lat, profile_lon)
+                    distance = geodesic(search_coords, profile_coords).miles
+                    if distance <= radius:
+                        results.append({'user': user, 'profile': profile, 'distance': round(distance, 1)})
+
+        results.sort(key=lambda x: x['distance'])
+
+    return render_template('search.html', form=form, results=results)

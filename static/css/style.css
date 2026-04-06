@@ -1,3 +1,61 @@
+/* ============================================
+   Colors: #BBBFBF #878787 #05AD98 #FFFFFF
+   ============================================ */
+
+/* --- Base --- */
+html, body {
+    min-height: 100% !important;
+    height: auto !important;
+}
+
+body {
+    background: linear-gradient(135deg, #474747, #626262);
+    text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .3);
+    box-shadow: inset 0 0 5rem rgba(0, 0, 0, .3);
+}
+
+/* --- Layout --- */
+.cover-container {
+    max-width: 42em;
+    min-height: 100vh;
+    height: auto !important;
+}
+
+header {
+    max-width: 100% !important;
+    width: 100% !important;
+}
+
+/* --- Navigation --- */
+.navbar-brand {
+    color: #96e2d8 !important;
+}
+
+.nav-link {
+    color: #FFFFFF !important;
+}
+
+.nav-link:hover {
+    color: #05AD98 !important;
+}
+
+/* --- Buttons --- */
+.btn-primary {
+    background-color: #05AD98 !important;
+    border-color: #05AD98 !important;
+}
+
+.btn-primary:hover {
+    background-color: #048a79 !important;
+    border-color: #048a79 !important;
+}
+
+.card-body {
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+/* --- Delete Button --- */
 .delete-btn {
     background-color: rgba(255, 255, 255, 0.2);
     border: none;
@@ -20,28 +78,63 @@
 
 .delete-btn:hover {
     background-color: rgba(255, 255, 255, 0.4);
-    color: white;
+    color: #FFFFFF;
 }
 
+/* --- Toast Notification --- */
 .toast-message {
-    position: fixed; 
-    bottom: 20px; 
-    right: 20px; 
-    z-index: 9999; 
-    opacity: 1; 
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    opacity: 1;
     transition: opacity 1s ease-out;
 }
 
-.card-body {
-    padding-top: 30px;
-    padding-bottom: 30px;
-}
-
+/* --- Misc --- */
 .dropdown {
     margin-bottom: 15px;
 }
 
-header {
-    max-width: 100% !important;
-    width: 100% !important;
+/* --- Credits --- */
+.card {
+    background-color: rgba(134, 134, 134, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #FFFFFF;
+}
+
+.card-title {
+    color: #96e2d8;
+}
+
+.card-text {
+    color: #ffffff;
+}
+
+/* --- Forms --- */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea,
+select {
+    background-color: rgba(134, 134, 134, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 5px !important;
+    color: #FFFFFF !important;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+textarea:focus,
+select:focus {
+    background-color: rgba(0, 0, 0, 0.4) !important;
+    border-color: #05AD98 !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 0 0 0.25rem rgba(5, 173, 152, 0.25) !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: rgba(255, 255, 255, 0.5) !important;
 }
