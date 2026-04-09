@@ -6,13 +6,23 @@
         {{ form.hidden_tag() }}
 
         {% if current_user.account_type == 'actor' %}
-            <p>{{ form.profile_photo.label }}<br>{{ form.profile_photo(class="form-control") }}</p>
+            <p>
+                {{ form.profile_photo.label }}<br>
+                <label class="file-upload-btn" for="profile_photo">Choose Photo</label>
+                {{ form.profile_photo(id="profile_photo") }}
+                <span class="file-name" id="file-name">No file chosen</span>
+            </p>
             <p>{{ form.first_name.label }}<br>{{ form.first_name(class="form-control") }}</p>
             <p>{{ form.last_name.label }}<br>{{ form.last_name(class="form-control") }}</p>
             <p>{{ form.city.label }}<br>{{ form.city(class="form-control") }}</p>
             <p>{{ form.state.label }}<br>{{ form.state(class="form-control") }}</p>
         {% elif current_user.account_type == 'company' %}
-            <p>{{ form.profile_photo.label }}<br>{{ form.profile_photo(class="form-control") }}</p>
+            <p>
+                {{ form.profile_photo.label }}<br>
+                <label class="file-upload-btn" for="profile_photo">Choose Photo</label>
+                {{ form.profile_photo(id="profile_photo") }}
+                <span class="file-name" id="file-name">No file chosen</span>
+            </p>
             <p>{{ form.company_name.label }}<br>{{ form.company_name(class="form-control") }}</p>
             <p>{{ form.city.label }}<br>{{ form.city(class="form-control") }}</p>
             <p>{{ form.state.label }}<br>{{ form.state(class="form-control") }}</p>
@@ -23,4 +33,13 @@
         <p>{{ form.submit(class="btn btn-primary") }}</p>
     </form>
     <a href="{{ url_for('profile', username=current_user.username) }}" class="btn btn-secondary">Cancel</a>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById('profile_photo').addEventListener('change', function() {
+        const fileName = this.files[0] ? this.files[0].name : 'No file chosen';
+        document.getElementById('file-name').textContent = fileName;
+    });
+</script>
 {% endblock %}
