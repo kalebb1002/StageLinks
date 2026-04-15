@@ -58,6 +58,9 @@ def register():
         print(form.errors) # Print form errors to console for debugging
     return render_template('register.html', form=form)
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
 
 @app.route('/profile/<username>', methods=['GET', 'POST'])
 def profile(username):
