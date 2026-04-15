@@ -28,7 +28,7 @@
         {{ render_field(form.password) }}
         <p>{{ form.submit(class="btn btn-primary") }}</p>
     </form>
-    <a href="{{ url_for('login') }}">Already have an account? Log In</a>
+    <a href="{{ url_for('login') }}" class="link">Already have an account? Log In</a>
 
     <script>
         const accountType = document.getElementById('account_type');
