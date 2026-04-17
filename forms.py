@@ -4,6 +4,7 @@ from wtforms import StringField, PasswordField, SubmitField, SelectField, TextAr
 from wtforms.validators import InputRequired, Length, ValidationError, Email, Optional, Regexp
 from flask_login import current_user
 from models import User
+from states import STATE_CHOICES
 
 class RegisterForm(FlaskForm):
     account_type = SelectField('Account Type', choices=[ # Account Type Selection
@@ -180,7 +181,17 @@ class PastCompanyShowForm(FlaskForm):
     submit = SubmitField("Add Past Show")
 
 class SearchForm(FlaskForm):
-    search_query = StringField(validators=[Length(max=255)
-        ], render_kw={"placeholder": "Search for actors or companies..."})
-
+    city = StringField(validators=[InputRequired()],
+        render_kw={"placeholder": "City"})
+    state = SelectField('State', choices=STATE_CHOICES, validators=[InputRequired()])
+    radius = SelectField('Radius', choices=[
+        ('10', '10 miles'),
+        ('25', '25 miles'),
+        ('50', '50 miles'),
+        ('100', '100 miles')
+    ])
+    search_type = SelectField('Looking for', choices=[
+        ('actor', 'Actors'),
+        ('company', 'Theater Companies')
+    ])
     submit = SubmitField("Search")

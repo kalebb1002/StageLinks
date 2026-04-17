@@ -2,20 +2,38 @@
 {% block title %}StageLinks{% endblock %}
 {% block content %}
 <div class="text-center d-flex flex-column align-items-center justify-content-center" style="min-height: 70vh;">
-    <h1 style="color: #96e2d8;">StageLinks</h1>
+    <h1>StageLinks</h1>
     <p class="lead">Connecting community theater actors and companies in your area.</p>
-    {% if current_user.is_authenticated %}
-        <p class="lead">
-            <a href="{{ url_for('profile', username=current_user.username) }}" 
-               class="btn btn-lg btn-light fw-bold border-white bg-white">Go to my Profile</a>
-        </p>
-    {% else %}
-        <p class="lead">
-            <a href="{{ url_for('register') }}" 
-               class="btn btn-lg btn-light fw-bold border-white bg-white me-2">Sign Up</a>
-            <a href="{{ url_for('login') }}" 
-               class="btn btn-lg btn-outline-light fw-bold">Login</a>
+
+    <form method="POST" action="{{ url_for('search') }}" novalidate class="w-100 mt-3">
+        {{ form.hidden_tag() }}
+        <div class="row g-2 justify-content-center">
+            <div class="col-md-3">
+                {{ form.city(class="form-control", placeholder="City") }}
+            </div>
+            <div class="col-auto">
+                {{ form.state(class="form-select") }}
+            </div>
+            <div class="col-md-2">
+                {{ form.radius(class="form-select") }}
+            </div>
+            <div class="col-auto">
+                {{ form.search_type(class="form-select") }}
+            </div>
+            <div class="col-md-2">
+                {{ form.submit(class="btn btn-primary w-100") }}
+            </div>
+        </div>
+    </form>
+
+    {% if not current_user.is_authenticated %}
+    <h1 class="mt-5">New to StageLinks?</h1>
+    <p class="lead">Create an account to connect with local theater companies and actors!</p>
+        <p class="mt-4">
+            <a href="{{ url_for('register') }}" class="btn btn-lg btn-light fw-bold border-white bg-white me-2">Sign Up</a>
+            <a href="{{ url_for('login') }}" class="btn btn-lg btn-outline-light fw-bold">Login</a>
         </p>
     {% endif %}
 </div>
+
 {% endblock %}

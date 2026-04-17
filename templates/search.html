@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Search Results - StageLinks{% endblock %}
+{% block content %}
+    <h1>Search Results</h1>
+
+    <form method="POST" action="{{ url_for('search') }}" novalidate class="mb-4">
+        {{ form.hidden_tag() }}
+        <div class="row g-2">
+            <div class="col-md-3">
+                {{ form.city(class="form-control") }}
+            </div>
+            <div class="col-auto">
+                {{ form.state(class="form-select") }}
+            </div>
+            <div class="col-md-2">
+                {{ form.radius(class="form-select") }}
+            </div>
+            <div class="col-md-2">
+                {{ form.search_type(class="form-select") }}
+            </div>
+            <div class="col-md-2">
+                {{ form.submit(class="btn btn-primary w-100") }}
+            </div>
+        </div>
+    </form>
+
+    {% if results %}
+        <p class="text-white-50">{{ results|length }} result(s) found</p>
+        <div class="row g-3">
+            {% for result in results %}
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            {% if result.profile.profile_photo %}
+                                <img src="{{ url_for('static', filename='uploads/' + result.profile.profile_photo) }}"
+                                     alt="Profile Photo"
+                                     style="width: 60px; height: 60px; object-fit: cover; border-radius: 50%; margin-bottom: 10px;">
+                            {% endif %}
+                            <h5 class="card-title">{{ result.name }}</h5>
+                            <p class="card-text">{{ result.profile.city }}, {{ result.profile.state }}</p>
+                            <p class="card-text"><small>{{ result.distance }} miles away</small></p>
+                            <a href="{{ url_for('profile', username=result.user.username) }}" class="btn btn-primary btn-sm">View Profile</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% elif request.method == 'POST' %}
+        <p>No results found. Try expanding your search radius!</p>
+    {% endif %}
+
+{% endblock %}

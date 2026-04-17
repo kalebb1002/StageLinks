@@ -10,7 +10,8 @@ from geopy.distance import geodesic
 
 @app.route('/')
 def home():
-    return render_template('home.html')
+    form = SearchForm()
+    return render_template('home.html', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -19,7 +20,7 @@ def login():
         user = User.query.filter_by(username=form.username.data).first()
         if user and bcrypt.check_password_hash(user.password_hash, form.password.data):
             login_user(user)
-            return redirect(url_for('profile', username=user.username))
+            return redirect(url_for('home'))
         else:
             flash('Invalid username or password', 'danger')
     return render_template('login.html', form=form)
@@ -240,20 +241,24 @@ def search():
     form = SearchForm()
     results = []
     if form.validate_on_submit():
-        zip_code = form.zip_code.data
+        city = form.city.data
+        state = form.state.data
         radius = int(form.radius.data)
         search_type = form.search_type.data
 
-        # Get coordinates for the zip code
-        response = requests.get(f'https://api.zippopotam.us/us/{zip_code}')
-        if response.status_code != 200:
-            flash('Invalid zip code. Please try again.', 'danger')
+        # Get coordinates for search location
+        response = requests.get(
+            'https://nominatim.openstreetmap.org/search',
+            params={'q': f'{city}, {state}, USA', 'format': 'json', 'limit': 1},
+            headers={'User-Agent': 'StageLinks/1.0'}
+        )
+
+        if not response.json():
+            flash('Location not found. Please try again.', 'danger')
             return render_template('search.html', form=form, results=results)
 
-        data = response.json()
-        search_lat = float(data['places'][0]['latitude'])
-        search_lon = float(data['places'][0]['longitude'])
-        search_coords = (search_lat, search_lon)
+        location = response.json()[0]
+        search_coords = (float(location['lat']), float(location['lon']))
 
         # Query users of the correct type
         users = User.query.filter_by(account_type=search_type).all()
@@ -261,19 +266,28 @@ def search():
         for user in users:
             if search_type == 'actor':
                 profile = ActorProfile.query.filter_by(user_id=user.id).first()
+                name = f"{profile.first_name} {profile.last_name}" if profile else None
             else:
                 profile = CompanyProfile.query.filter_by(user_id=user.id).first()
+                name = profile.company_name if profile else None
 
-            if profile and profile.zip_code:
-                profile_response = requests.get(f'https://api.zippopotam.us/us/{profile.zip_code}')
-                if profile_response.status_code == 200:
-                    profile_data = profile_response.json()
-                    profile_lat = float(profile_data['places'][0]['latitude'])
-                    profile_lon = float(profile_data['places'][0]['longitude'])
-                    profile_coords = (profile_lat, profile_lon)
+            if profile and profile.city and profile.state:
+                profile_response = requests.get(
+                    'https://nominatim.openstreetmap.org/search',
+                    params={'q': f'{profile.city}, {profile.state}, USA', 'format': 'json', 'limit': 1},
+                    headers={'User-Agent': 'StageLinks/1.0'}
+                )
+                if profile_response.json():
+                    profile_location = profile_response.json()[0]
+                    profile_coords = (float(profile_location['lat']), float(profile_location['lon']))
                     distance = geodesic(search_coords, profile_coords).miles
                     if distance <= radius:
-                        results.append({'user': user, 'profile': profile, 'distance': round(distance, 1)})
+                        results.append({
+                            'user': user,
+                            'profile': profile,
+                            'name': name,
+                            'distance': round(distance, 1)
+                        })
 
         results.sort(key=lambda x: x['distance'])
 
