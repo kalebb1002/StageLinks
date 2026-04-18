@@ -275,6 +275,7 @@ def add_company_show():
         show = PastCompanyShow(
             user_id=current_user.id,
             show_name=form.show_name.data,
+            month=form.month.data,
             year=form.year.data,
             description=form.description.data
         )
@@ -283,6 +284,28 @@ def add_company_show():
 
         return redirect(url_for('profile', username=current_user.username))
     return render_template('add_company_show.html', form=form)
+
+@app.route('/edit_company_show/<show_id>', methods=['GET', 'POST'])
+@login_required
+def edit_company_show(show_id):
+    show = PastCompanyShow.query.get_or_404(show_id)
+    if show.user_id != current_user.id:
+        return redirect(url_for('profile', username=current_user.username))
+    form = PastCompanyShowForm()
+    if form.validate_on_submit():
+        show.show_name = form.show_name.data
+        show.month = form.month.data
+        show.year = form.year.data
+        show.description = form.description.data
+        db.session.commit()
+        flash('Show updated successfully.', 'success')
+        return redirect(url_for('profile', username=current_user.username))
+    elif request.method == 'GET':
+        form.show_name.data = show.show_name
+        form.month.data = show.month
+        form.year.data = show.year
+        form.description.data = show.description
+    return render_template('edit_company_show.html', form=form)
 
 @app.route('/delete_company_show/<show_id>', methods=['POST'])
 @login_required
