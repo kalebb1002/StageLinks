@@ -86,8 +86,8 @@ def profile(username):
     user = User.query.filter_by(username=username).first_or_404()
     
     month_order = {month: i for i, month in enumerate(
-        ['January', 'February', 'March', 'April', 'May', 'June',
-         'July', 'August', 'September', 'October', 'November', 'December']
+    ['December', 'November', 'October', 'September', 'August', 'July',
+     'June', 'May', 'April', 'March', 'February', 'January']
     )}
 
     if user.account_type == 'actor':
