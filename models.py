@@ -41,6 +41,7 @@ class ActorCredit(db.Model):
     show_name = db.Column(db.String(255))
     theater_name = db.Column(db.String(255))
     role = db.Column(db.String(255))
+    month = db.Column(db.String(20))
     year = db.Column(db.Integer)
     user = db.relationship('User', backref=db.backref('actor_credits', lazy=True))
 
@@ -49,6 +50,7 @@ class PastCompanyShow(db.Model):
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     user_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
     show_name = db.Column(db.String(255))
+    month = db.Column(db.String(20))
     year = db.Column(db.Integer)
     description = db.Column(db.Text)
     user = db.relationship('User', backref=db.backref('past_company_shows', lazy=True))

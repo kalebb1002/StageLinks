@@ -4,7 +4,7 @@ from wtforms import StringField, PasswordField, SubmitField, SelectField, TextAr
 from wtforms.validators import InputRequired, Length, ValidationError, Email, Optional, Regexp
 from flask_login import current_user
 from models import User
-from states import STATE_CHOICES
+from selections import *
 
 class RegisterForm(FlaskForm):
     account_type = SelectField('Account Type', choices=[ # Account Type Selection
@@ -159,6 +159,8 @@ class ActorCreditForm(FlaskForm):
 
     role = StringField(validators=[Length(max=255)
         ], render_kw={"placeholder": "Role"})
+    
+    month = SelectField('Month', choices=MONTH_CHOICES, validators=[Optional()])
 
     year = StringField(validators=[Length(max=4)
         ], render_kw={"placeholder": "Year (e.g., 2023)"})
@@ -171,6 +173,8 @@ class DeleteCreditForm(FlaskForm):
 class PastCompanyShowForm(FlaskForm):
     show_name = StringField(validators=[Length(max=255)
         ], render_kw={"placeholder": "Show Name"})
+
+    month = SelectField('Month', choices=MONTH_CHOICES, validators=[Optional()])
 
     year = StringField(validators=[Length(max=4)
         ], render_kw={"placeholder": "Year (e.g., 2023)"})

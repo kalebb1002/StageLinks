@@ -17,7 +17,6 @@
             <p>{{ user.actor_profile.bio }}</p>
         {% endif %}
 
-        
         {% if credits %}
         <h3>Past Credits</h3>
             <div class="d-flex overflow-auto gap-3 pb-2">
@@ -27,8 +26,9 @@
                             <h5 class="card-title">{{ credit.show_name }}</h5>
                             <p class="card-text"><strong>Role:</strong> {{ credit.role }}</p>
                             <p class="card-text"><strong>Theater:</strong> {{ credit.theater_name }}</p>
-                            <p class="card-text"><strong>Year:</strong> {{ credit.year }}</p>
+                            <p class="card-text"><strong>{{ credit.month }} {{ credit.year }}</strong></p>
                             {% if current_user.is_authenticated and current_user.username == user.username %}
+                                <a href="{{ url_for('edit_credit', credit_id=credit.id) }}" class="btn btn-sm btn-primary">Edit</a>
                                 <form method="POST" action="{{ url_for('delete_credit', credit_id=credit.id) }}" style="position: absolute; top: 5px; right: 5px;">
                                     {{ delete_form.hidden_tag() }}
                                     <button type="submit" class="delete-btn">&times;</button>
@@ -53,49 +53,48 @@
             alt="Profile Photo" style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%; margin-bottom: 20px;">
         {% endif %}
 
-    <h1>{{ user.company_profile.company_name }}</h1>
-    <p>Theater Company</p>
-    {% if user.company_profile.city and user.company_profile.state %}
-        <p>{{ user.company_profile.city }}, {{ user.company_profile.state }}</p>
-    {% endif %}
-    {% if user.company_profile.bio %}
-        <p>{{ user.company_profile.bio }}</p>
-    {% endif %}
-    {% if user.company_profile.website %}
-        <p><a href="{{ user.company_profile.website }}">Visit Our Website</a></p>
-    {% endif %}
+        <h1>{{ user.company_profile.company_name }}</h1>
+        <p>Theater Company</p>
+        {% if user.company_profile.city and user.company_profile.state %}
+            <p>{{ user.company_profile.city }}, {{ user.company_profile.state }}</p>
+        {% endif %}
+        {% if user.company_profile.bio %}
+            <p>{{ user.company_profile.bio }}</p>
+        {% endif %}
+        {% if user.company_profile.website %}
+            <p><a href="{{ user.company_profile.website }}">Visit Our Website</a></p>
+        {% endif %}
 
-    {% if shows %}
-        <h3>Past Shows</h3>
-        <div class="d-flex overflow-auto gap-3 pb-2">
-            {% for show in shows %}
-                <div class="card credit-card" style="min-width: 200px; position: relative;">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ show.show_name }}</h5>
-                        <p class="card-text"><strong>Year:</strong> {{ show.year }}</p>
-                        {% if show.description %}
-                            <p class="card-text">{{ show.description }}</p>
-                        {% endif %}
-                        {% if current_user.is_authenticated and current_user.username == user.username %}
-                            <form method="POST" action="{{ url_for('delete_company_show', show_id=show.id) }}" style="position: absolute; top: 5px; right: 5px;">
-                                {{ delete_form.hidden_tag() }}
-                                <button type="submit" class="delete-btn">&times;</button>
-                            </form>
-                        {% endif %}
+        {% if shows %}
+            <h3>Past Shows</h3>
+            <div class="d-flex overflow-auto gap-3 pb-2">
+                {% for show in shows %}
+                    <div class="card credit-card" style="min-width: 200px; position: relative;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ show.show_name }}</h5>
+                            <p class="card-text"><strong>{{ show.month }} {{ show.year }}</strong></p>
+                            {% if show.description %}
+                                <p class="card-text">{{ show.description }}</p>
+                            {% endif %}
+                            {% if current_user.is_authenticated and current_user.username == user.username %}
+                                <a href="{{ url_for('edit_company_show', show_id=show.id) }}" class="btn btn-sm btn-primary">Edit</a>
+                                <form method="POST" action="{{ url_for('delete_company_show', show_id=show.id) }}" style="position: absolute; top: 5px; right: 5px;">
+                                    {{ delete_form.hidden_tag() }}
+                                    <button type="submit" class="delete-btn">&times;</button>
+                                </form>
+                            {% endif %}
+                        </div>
                     </div>
-                </div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <p></p>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p></p>
+        {% endif %}
+
+        {% if current_user.is_authenticated and current_user.username == user.username %}
+            <a href="{{ url_for('add_company_show') }}" class="btn btn-primary">Add Show</a>
+            <a href="{{ url_for('edit_profile') }}" class="btn btn-secondary">Edit Profile</a>
+        {% endif %}
     {% endif %}
-
-    {% if current_user.is_authenticated and current_user.username == user.username %}
-        <a href="{{ url_for('add_company_show') }}" class="btn btn-primary">Add Show</a>
-        <a href="{{ url_for('edit_profile') }}" class="btn btn-secondary">Edit Profile</a>
-    {% endif %}
-{% endif %}
-
-
 
 {% endblock %}

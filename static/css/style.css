@@ -93,6 +93,11 @@ select {
     color: #ffffff !important;
 }
 
+select option {
+    background-color: #474747 !important;
+    color: #ffffff !important;
+}
+
 .form-control::placeholder,
 .form-select::placeholder,
 input::placeholder,

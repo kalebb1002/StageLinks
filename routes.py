@@ -7,6 +7,24 @@ from forms import *
 from app import app, bcrypt
 import requests
 from geopy.distance import geodesic
+from PIL import Image
+import io
+
+def save_profile_photo(file, filename):
+    img = Image.open(file)
+    
+    # Convert to RGB if necessary (handles PNG with transparency, HEIC etc.)
+    if img.mode in ('RGBA', 'P'):
+        img = img.convert('RGB')
+    
+    # Resize to max 800x800 while maintaining aspect ratio
+    img.thumbnail((800, 800), Image.LANCZOS)
+    
+    # Save to static/uploads
+    filepath = os.path.join('static/uploads', filename)
+    img.save(filepath, 'JPEG', quality=85)
+    
+    return filename
 
 @app.route('/')
 def home():
@@ -66,14 +84,29 @@ def about():
 @app.route('/profile/<username>', methods=['GET', 'POST'])
 def profile(username):
     user = User.query.filter_by(username=username).first_or_404()
+    
+    month_order = {month: i for i, month in enumerate(
+        ['January', 'February', 'March', 'April', 'May', 'June',
+         'July', 'August', 'September', 'October', 'November', 'December']
+    )}
+
     if user.account_type == 'actor':
         profile = ActorProfile.query.filter_by(user_id=user.id).first()
-        credits = ActorCredit.query.filter_by(user_id=user.id).order_by(ActorCredit.year.desc()).all()
+        credits = ActorCredit.query.filter_by(user_id=user.id).all()
+        credits.sort(key=lambda x: (
+            -(x.year or 0),
+            month_order.get(x.month, 13)
+        ))
         shows = []
     else:
         profile = CompanyProfile.query.filter_by(user_id=user.id).first()
+        shows = PastCompanyShow.query.filter_by(user_id=user.id).all()
+        shows.sort(key=lambda x: (
+            -(x.year or 0),
+            month_order.get(x.month, 13)
+        ))
         credits = []
-        shows = PastCompanyShow.query.filter_by(user_id=user.id).order_by(PastCompanyShow.year.desc()).all()
+
     delete_form = DeleteCreditForm()
     return render_template('profile.html', user=user, profile=profile, credits=credits, shows=shows, delete_form=delete_form)
 
@@ -98,7 +131,8 @@ def edit_profile():
             if form.profile_photo.data:
                 photo = form.profile_photo.data
                 filename = secure_filename(photo.filename)
-                photo.save(os.path.join('static/uploads', filename))
+                filename = os.path.splitext(filename)[0] + '.jpg'
+                save_profile_photo(photo, filename)
                 profile.profile_photo = filename
             db.session.commit()
             return redirect(url_for('profile', username=current_user.username))
@@ -124,7 +158,8 @@ def edit_profile():
             if form.profile_photo.data:
                 photo = form.profile_photo.data
                 filename = secure_filename(photo.filename)
-                photo.save(os.path.join('static/uploads', filename))
+                filename = os.path.splitext(filename)[0] + '.jpg'
+                save_profile_photo(photo, filename)
                 profile.profile_photo = filename
             db.session.commit()
             return redirect(url_for('profile', username=current_user.username))
@@ -192,6 +227,30 @@ def add_credit():
 
         return redirect(url_for('profile', username=current_user.username))
     return render_template('add_credit.html', form=form)
+
+@app.route('/edit_credit/<credit_id>', methods=['GET', 'POST'])
+@login_required
+def edit_credit(credit_id):
+    credit = ActorCredit.query.get_or_404(credit_id)
+    if credit.user_id != current_user.id:
+        return redirect(url_for('profile', username=current_user.username))
+    form = ActorCreditForm()
+    if form.validate_on_submit():
+        credit.show_name = form.show_name.data
+        credit.theater_name = form.theater_name.data
+        credit.role = form.role.data
+        credit.month = form.month.data
+        credit.year = form.year.data
+        db.session.commit()
+        flash('Credit updated successfully.', 'success')
+        return redirect(url_for('profile', username=current_user.username))
+    elif request.method == 'GET':
+        form.show_name.data = credit.show_name
+        form.theater_name.data = credit.theater_name
+        form.role.data = credit.role
+        form.month.data = credit.month
+        form.year.data = credit.year
+    return render_template('edit_credit.html', form=form)
 
 @app.route('/delete_credit/<credit_id>', methods=['POST'])
 @login_required
