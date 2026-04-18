@@ -220,6 +220,7 @@ def add_credit():
             show_name=form.show_name.data,
             theater_name=form.theater_name.data,
             role=form.role.data,
+            month=form.month.data,
             year=form.year.data
         )
         db.session.add(credit)
