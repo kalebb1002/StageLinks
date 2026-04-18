@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% block title %}StageLinks{% endblock %}
-{% block content %}
-<div class="text-center d-flex flex-column align-items-center justify-content-center" style="min-height: 70vh;">
+{% block body %}
+<div class="home-hero d-flex flex-column align-items-center justify-content-center text-center">
     <h1>StageLinks</h1>
-    <p class="lead">Connecting community theater actors and companies in your area.</p>
+    <p class="lead text-white mb-4">Connecting community theater actors and companies in your area.</p>
 
     <form method="POST" action="{{ url_for('search') }}" novalidate class="w-100 mt-3">
         {{ form.hidden_tag() }}
@@ -17,7 +17,7 @@
             <div class="col-md-2">
                 {{ form.radius(class="form-select") }}
             </div>
-            <div class="col-auto">
+            <div class="col-md-2">
                 {{ form.search_type(class="form-select") }}
             </div>
             <div class="col-md-2">
@@ -27,13 +27,12 @@
     </form>
 
     {% if not current_user.is_authenticated %}
-    <h1 class="mt-5">New to StageLinks?</h1>
-    <p class="lead">Create an account to connect with local theater companies and actors!</p>
+        <h2 class="text-white mt-5">New to StageLinks?</h2>
+        <p class="lead text-white">Create an account to connect with local theater companies and actors!</p>
         <p class="mt-4">
-            <a href="{{ url_for('register') }}" class="btn btn-lg btn-light fw-bold border-white bg-white me-2">Sign Up</a>
+            <a href="{{ url_for('register') }}" class="btn btn-lg btn-light fw-bold me-2">Sign Up</a>
             <a href="{{ url_for('login') }}" class="btn btn-lg btn-outline-light fw-bold">Login</a>
         </p>
     {% endif %}
 </div>
-
 {% endblock %}
