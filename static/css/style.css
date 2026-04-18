@@ -191,7 +191,7 @@ input[type="file"] {
 
 /* --- Home Page Hero --- */
 .home-hero {
-    background-image: url('/static/img/heroA.png');
+    background-image: url('/static/img/heroLOGO.png');
     background-size: cover;
     background-position: center;
     width: 100%;

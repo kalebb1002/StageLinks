@@ -27,8 +27,6 @@
     </form>
 
     {% if not current_user.is_authenticated %}
-        <h2 class="text-white mt-5">New to StageLinks?</h2>
-        <p class="lead text-white">Create an account to connect with local theater companies and actors!</p>
         <p class="mt-4">
             <a href="{{ url_for('register') }}" class="btn btn-lg btn-light fw-bold me-2">Sign Up</a>
             <a href="{{ url_for('login') }}" class="btn btn-lg btn-outline-light fw-bold">Login</a>
