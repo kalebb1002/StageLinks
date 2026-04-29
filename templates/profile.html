@@ -16,6 +16,46 @@
         {% if user.actor_profile.bio %}
             <p>{{ user.actor_profile.bio }}</p>
         {% endif %}
+        {% if socials %}
+<div class="social-links mb-3">
+    {% for social in socials %}
+        <a href="{{ social.url }}" target="_blank" class="social-btn me-2">
+            {% if social.platform == 'email' %}
+                <i class="fa-solid fa-envelope fa-2x"></i>
+            {% endif %}
+            {% if social.platform == 'instagram' %}
+                <i class="fa-brands fa-instagram fa-2x"></i>
+            {% elif social.platform == 'facebook' %}
+                <i class="fa-brands fa-facebook fa-2x"></i>
+            {% elif social.platform == 'twitter' %}
+                <i class="fa-brands fa-x-twitter fa-2x"></i>
+            {% elif social.platform == 'tiktok' %}
+                <i class="fa-brands fa-tiktok fa-2x"></i>
+            {% elif social.platform == 'youtube' %}
+                <i class="fa-brands fa-youtube fa-2x"></i>
+            {% elif social.platform == 'linkedin' %}
+                <i class="fa-brands fa-linkedin fa-2x"></i>
+            {% elif social.platform == 'website' %}
+                <i class="fa-solid fa-globe fa-2x"></i>
+            {% endif %}
+        </a>
+        {% if current_user.is_authenticated and current_user.username == user.username %}
+            <form method="POST" action="{{ url_for('delete_social', social_id=social.id) }}" style="display:inline;">
+                {{ delete_form.hidden_tag() }}
+                <button type="submit" class="btn btn-sm btn-link text-danger p-0">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </form>
+        {% endif %}
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if current_user.is_authenticated and current_user.username == user.username %}
+    <a href="{{ url_for('add_social') }}" class="btn btn-sm btn-outline-light mb-3">
+        <i class="fa-solid fa-plus"></i> Add Social
+    </a>
+{% endif %}
 
         {% if credits %}
         <h3>Past Credits</h3>
@@ -61,6 +101,43 @@
         {% if user.company_profile.bio %}
             <p>{{ user.company_profile.bio }}</p>
         {% endif %}
+        {% if socials %}
+<div class="social-links mb-3">
+    {% for social in socials %}
+        <a href="{{ social.url }}" target="_blank" class="social-btn me-2">
+            {% if social.platform == 'instagram' %}
+                <i class="fa-brands fa-instagram fa-2x"></i>
+            {% elif social.platform == 'facebook' %}
+                <i class="fa-brands fa-facebook fa-2x"></i>
+            {% elif social.platform == 'twitter' %}
+                <i class="fa-brands fa-x-twitter fa-2x"></i>
+            {% elif social.platform == 'tiktok' %}
+                <i class="fa-brands fa-tiktok fa-2x"></i>
+            {% elif social.platform == 'youtube' %}
+                <i class="fa-brands fa-youtube fa-2x"></i>
+            {% elif social.platform == 'linkedin' %}
+                <i class="fa-brands fa-linkedin fa-2x"></i>
+            {% elif social.platform == 'website' %}
+                <i class="fa-solid fa-globe fa-2x"></i>
+            {% endif %}
+        </a>
+        {% if current_user.is_authenticated and current_user.username == user.username %}
+            <form method="POST" action="{{ url_for('delete_social', social_id=social.id) }}" style="display:inline;">
+                {{ delete_form.hidden_tag() }}
+                <button type="submit" class="btn btn-sm btn-link text-danger p-0">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </form>
+        {% endif %}
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if current_user.is_authenticated and current_user.username == user.username %}
+    <a href="{{ url_for('add_social') }}" class="btn btn-sm btn-outline-light mb-3">
+        <i class="fa-solid fa-plus"></i> Add Social
+    </a>
+{% endif %}
         {% if user.company_profile.website %}
             <p><a href="{{ user.company_profile.website }}">Visit Our Website</a></p>
         {% endif %}

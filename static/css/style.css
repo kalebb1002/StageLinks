@@ -222,3 +222,13 @@ input[type="file"] {
     height: auto !important;
     padding: 0 !important;
 }
+
+/* --- Social Buttons --- */
+.social-btn {
+    color: #FFFFFF;
+    transition: color 0.2s ease;
+}
+
+.social-btn:hover {
+    color: #05AD98;
+}

@@ -54,3 +54,12 @@ class PastCompanyShow(db.Model):
     year = db.Column(db.Integer)
     description = db.Column(db.Text)
     user = db.relationship('User', backref=db.backref('past_company_shows', lazy=True))
+
+class Social(db.Model):
+    __tablename__ = 'socials'
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
+    platform = db.Column(db.String(50))
+    url = db.Column(db.String(255))
+    user = db.relationship('User', backref=db.backref('socials', lazy=True))
+

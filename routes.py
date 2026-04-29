@@ -1,3 +1,5 @@
+from sys import platform
+
 from flask import render_template, url_for, redirect, request, flash
 from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.utils import secure_filename
@@ -93,6 +95,7 @@ def profile(username):
     if user.account_type == 'actor':
         profile = ActorProfile.query.filter_by(user_id=user.id).first()
         credits = ActorCredit.query.filter_by(user_id=user.id).all()
+        socials = Social.query.filter_by(user_id=user.id).all()
         credits.sort(key=lambda x: (
             -(x.year or 0),
             month_order.get(x.month, 13)
@@ -101,6 +104,7 @@ def profile(username):
     else:
         profile = CompanyProfile.query.filter_by(user_id=user.id).first()
         shows = PastCompanyShow.query.filter_by(user_id=user.id).all()
+        socials = Social.query.filter_by(user_id=user.id).all()
         shows.sort(key=lambda x: (
             -(x.year or 0),
             month_order.get(x.month, 13)
@@ -108,7 +112,7 @@ def profile(username):
         credits = []
 
     delete_form = DeleteCreditForm()
-    return render_template('profile.html', user=user, profile=profile, credits=credits, shows=shows, delete_form=delete_form)
+    return render_template('profile.html', user=user, profile=profile, credits=credits, shows=shows, delete_form=delete_form, socials=socials)
 
 @app.route('/logout')
 @login_required
@@ -198,13 +202,6 @@ def account_settings():
         
     account_form.email.data = current_user.email
     account_form.username.data = current_user.username
-
-    if request.method == 'POST':
-        print(request.form)
-    if 'update_account' in request.form:
-        print("update account branch")
-    elif 'change_password' in request.form:
-        print("change password branch")
 
     return render_template('account_settings.html', account_form=account_form, password_form=password_form)
 
@@ -317,6 +314,41 @@ def delete_company_show(show_id):
     db.session.delete(show)
     db.session.commit()
     flash('Show deleted successfully.', 'success')
+    return redirect(url_for('profile', username=current_user.username))
+
+@app.route('/add_social', methods=['GET', 'POST'])
+@login_required
+def add_social():
+    form = SocialForm()
+    if form.validate_on_submit():
+        platform = form.platform.data
+        url = form.url.data
+
+        if platform == 'email':
+            url = 'mailto:' + url if not url.startswith('mailto:') else url
+        elif not url.startswith('http'):
+            url = 'https://' + url
+
+        social = Social(
+            user_id=current_user.id,
+            platform=platform,
+            url=url
+        )
+        db.session.add(social)
+        db.session.commit()
+        flash('Social link added!', 'success')
+        return redirect(url_for('profile', username=current_user.username))
+    return render_template('add_social.html', form=form)
+
+@app.route('/delete_social/<social_id>', methods=['POST'])
+@login_required
+def delete_social(social_id):
+    social = Social.query.get_or_404(social_id)
+    if social.user_id != current_user.id:
+        return redirect(url_for('profile', username=current_user.username))
+    db.session.delete(social)
+    db.session.commit()
+    flash('Social link removed.', 'success')
     return redirect(url_for('profile', username=current_user.username))
 
 @app.route('/search', methods=['GET', 'POST'])

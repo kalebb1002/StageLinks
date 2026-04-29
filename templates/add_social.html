@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Add Social{% endblock %}
+{% block content %}
+    <h1>Add Social Link</h1>
+    <form method="POST" action="" novalidate>
+        {{ form.hidden_tag() }}
+        <p>{{ form.platform.label }}<br>{{ form.platform(class="form-select") }}</p>
+        <p>
+            <label id="url-label" for="url">URL</label><br>
+            {{ form.url(class="form-control", id="url") }}
+        </p>
+        <p>{{ form.submit(class="btn btn-primary") }}</p>
+    </form>
+    <a href="{{ url_for('profile', username=current_user.username) }}" class="btn btn-secondary">Cancel</a>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const platform = document.getElementById('platform');
+    const urlLabel = document.getElementById('url-label');
+    const urlInput = document.getElementById('url');
+
+    const hints = {
+        'email': { label: 'Email Address', placeholder: 'e.g. contact@example.com' },
+        'instagram': { label: 'URL', placeholder: 'e.g. https://instagram.com/johndoe' },
+        'facebook': { label: 'URL', placeholder: 'e.g. https://facebook.com/johndoe' },
+        'twitter': { label: 'URL', placeholder: 'e.g. https://x.com/johndoe' },
+        'tiktok': { label: 'URL', placeholder: 'e.g. https://tiktok.com/@johndoe' },
+        'youtube': { label: 'URL', placeholder: 'e.g. https://youtube.com/@johndoe' },
+        'linkedin': { label: 'URL', placeholder: 'e.g. https://linkedin.com/in/johndoe' },
+        'website': { label: 'Website URL', placeholder: 'e.g. https://yourwebsite.com' }
+    };
+
+    function updateField() {
+        const hint = hints[platform.value];
+        if (hint) {
+            urlLabel.textContent = hint.label;
+            urlInput.placeholder = hint.placeholder;
+        }
+    }
+
+    platform.addEventListener('change', updateField);
+    updateField();
+</script>
+{% endblock %}

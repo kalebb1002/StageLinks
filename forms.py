@@ -199,3 +199,21 @@ class SearchForm(FlaskForm):
         ('company', 'Theater Companies')
     ])
     submit = SubmitField("Search")
+
+class SocialForm(FlaskForm):
+    platform = SelectField('Platform', choices=[
+        ('email', 'Email'),
+        ('facebook', 'Facebook'),
+        ('instagram', 'Instagram'),
+        ('twitter', 'Twitter/X'),
+        ('tiktok', 'TikTok'),
+        ('youtube', 'YouTube'),
+        ('linkedin', 'LinkedIn'),
+        ('website', 'Website')
+    ], validators=[InputRequired()])
+    url = StringField(validators=[InputRequired(), Length(max=255)],
+        render_kw={"placeholder": "Enter URL or email address"})
+    submit = SubmitField("Add")
+
+
+    
